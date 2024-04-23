@@ -5,6 +5,7 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import {
   selectContactsIsError,
   selectContactsIsLoading,
+  selectNameFilter,
   selectTotalContacts,
   selectVisibleContacts,
 } from "../../redux/selectors";
@@ -14,20 +15,27 @@ const ContactList = () => {
   const filteredContacts = useSelector(selectVisibleContacts);
   const isLoading = useSelector(selectContactsIsLoading);
   const isError = useSelector(selectContactsIsError);
+  const nameFilter = useSelector(selectNameFilter);
   const totalContacts = useSelector(selectTotalContacts);
 
-  const noContacts = filteredContacts.length === 0;
+  const noContacts = filteredContacts.length === 0 && nameFilter !== "";
+
+  const foundContactsCount = filteredContacts.length;
+
   return (
     <div>
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
       {noContacts && <p>No contacts found.</p>}
+      {nameFilter && foundContactsCount > 0 && (
+        <p>Found {foundContactsCount} contacts.</p>
+      )}
+      {!nameFilter && <p>Total contacts: {totalContacts}</p>}
       <ul className={css.contactList}>
         {filteredContacts.map(({ name, number, id }) => (
           <Contact key={id} id={id} name={name} number={number} />
         ))}
       </ul>
-      <p>Total Contacts: {totalContacts}</p>
     </div>
   );
 };
