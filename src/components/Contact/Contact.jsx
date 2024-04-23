@@ -11,7 +11,7 @@ const Contact = ({ name, number, id }) => {
 
   return (
     <li className={css.contactItem}>
-      <p className={css.contactText}>🤠 {name}</p>
+      <p className={css.contactText}>👨‍🦱 {name}</p>
       <p className={css.contactText}>📞 {number}</p>
       <button
         className={css.contactBtn}
