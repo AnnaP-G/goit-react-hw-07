@@ -1,29 +1,33 @@
 import { useSelector } from "react-redux";
 import Contact from "../Contact/Contact";
-import { selectContacts } from "../../redux/contactsSlice";
-import { selectNameFilter } from "../../redux/filtersSlice";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import {
+  selectContactsIsError,
+  selectContactsIsLoading,
+  selectTotalContacts,
+  selectVisibleContacts,
+} from "../../redux/selectors";
 import css from "./ContactList.module.css";
 
 const ContactList = () => {
-  const contacts = useSelector(selectContacts);
-  const filter = useSelector(selectNameFilter);
+  const filteredContacts = useSelector(selectVisibleContacts);
+  const isLoading = useSelector(selectContactsIsLoading);
+  const isError = useSelector(selectContactsIsError);
+  const totalContacts = useSelector(selectTotalContacts);
 
-  const filteredContacts = contacts.filter(
-    (contact) =>
-      contact.name.toLowerCase().includes(filter.toLowerCase()) ||
-      contact.number.includes(filter)
-  );
-
-  const noContacts = filteredContacts.length === 0 && filter.trim() !== "";
-
+  const noContacts = filteredContacts.length === 0;
   return (
     <div>
+      {isLoading && <Loader />}
+      {isError && <ErrorMessage />}
       {noContacts && <p>No contacts found.</p>}
       <ul className={css.contactList}>
         {filteredContacts.map(({ name, number, id }) => (
           <Contact key={id} id={id} name={name} number={number} />
         ))}
       </ul>
+      <p>Total Contacts: {totalContacts}</p>
     </div>
   );
 };
